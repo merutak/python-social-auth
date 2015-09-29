@@ -10,7 +10,10 @@ import requests
 import social
 
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
+try:
+    from requests.packages.urllib3.poolmanager import PoolManager
+except ImportError:
+    from urllib3 import connectionpool as cp
 
 from social.exceptions import AuthCanceled, AuthUnreachableProvider
 from social.p3 import urlparse, urlunparse, urlencode, \
