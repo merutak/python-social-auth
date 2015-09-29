@@ -1,7 +1,7 @@
 import datetime
 from calendar import timegm
 
-from jwt import InvalidTokenError, decode as jwt_decode
+from jwt import MalformedJWT, JWT
 
 from openid.consumer.consumer import Consumer, SUCCESS, CANCEL, FAILURE
 from openid.consumer.discover import DiscoveryFailure
@@ -329,10 +329,10 @@ class OpenIdConnectAuth(BaseOAuth2):
         try:
             # Decode the JWT and raise an error if the secret is invalid or
             # the response has expired.
-            id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+            id_token = JWT.decode(id_token, decryption_key, audience=client_id,
                                   issuer=self.ID_TOKEN_ISSUER,
                                   algorithms=['HS256'])
-        except InvalidTokenError as err:
+        except MalformedJWT as err:
             raise AuthTokenError(self, err)
 
         # Verify the token was issued in the last 10 minutes
