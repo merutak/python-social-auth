@@ -100,9 +100,13 @@ class OAuthAuth(BaseAuth):
 
     def get_scope(self):
         """Return list with needed access scope"""
-        scope = self.setting('SCOPE', [])
-        if not self.setting('IGNORE_DEFAULT_SCOPE', False):
-            scope = scope + (self.DEFAULT_SCOPE or [])
+        scope = self.strategy.request_data().get('OVERRIDE_SCOPE')
+        if scope is not None:
+            scope = scope.split(',')
+        else:
+            scope = self.setting('SCOPE', [])
+            if not self.setting('IGNORE_DEFAULT_SCOPE', False):
+                scope = scope + (self.DEFAULT_SCOPE or [])
         return scope
 
     def get_scope_argument(self):
