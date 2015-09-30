@@ -100,6 +100,8 @@ def sanitize_redirect(host, redirect_to):
         else:
             if netloc == host:
                 return redirect_to
+        social_logger.error("Redirect did not pass sanitation, so not redirecting: %s (conflicts with %s)",
+                            redirect_to, host)
 
 
 def user_is_authenticated(user):
