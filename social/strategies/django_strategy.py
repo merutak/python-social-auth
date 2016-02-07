@@ -53,6 +53,12 @@ class DjangoStrategy(BaseStrategy):
         if self.request:
             return self.request.get_host()
 
+    def allow_host(self):
+        cookie_setting = getattr(settings, 'SESSION_COOKIE_DOMAIN', '')
+        if not cookie_setting:
+            return None
+        return cookie_setting
+
     def request_is_secure(self):
         """Is the request using HTTPS?"""
         return self.request.is_secure()

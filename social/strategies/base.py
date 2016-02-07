@@ -173,6 +173,10 @@ class BaseStrategy(object):
         """Return current host value"""
         raise NotImplementedError('Implement in subclass')
 
+    def allow_host(self):
+        """Return a pattern (in a format suitable for HTTP Set-Cookie) for allowed hosts"""
+        raise NotImplementedError('Implement in subclass')
+
     def session_get(self, name, default=None):
         """Return session value for given key"""
         raise NotImplementedError('Implement in subclass')

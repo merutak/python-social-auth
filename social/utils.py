@@ -84,7 +84,7 @@ def setting_name(*names):
     return to_setting_name(*((SETTING_PREFIX,) + names))
 
 
-def sanitize_redirect(host, redirect_to):
+def sanitize_redirect(host, redirect_to, allowed_host):
     """
     Given the hostname and an untrusted URL to redirect to,
     this method tests it to make sure it isn't garbage/harmful
@@ -98,7 +98,7 @@ def sanitize_redirect(host, redirect_to):
         except (TypeError, AttributeError):
             pass
         else:
-            if netloc == host:
+            if netloc == host or netloc == allowed_host or (allowed_host.startswith('.') and re.search(re.escape(allowed_host) + r'(:[0-9]*)?$', netloc)):
                 return redirect_to
         social_logger.error("Redirect did not pass sanitation, so not redirecting: %s (conflicts with %s)",
                             redirect_to, host)

@@ -20,7 +20,8 @@ def do_auth(backend, redirect_name='next'):
         redirect_uri = data[redirect_name]
         if backend.setting('SANITIZE_REDIRECTS', True):
             redirect_uri = sanitize_redirect(backend.strategy.request_host(),
-                                             redirect_uri)
+                                             redirect_uri,
+                                             backend.strategy.allow_host())
         backend.strategy.session_set(
             redirect_name,
             redirect_uri or backend.setting('LOGIN_REDIRECT_URL')
@@ -91,7 +92,7 @@ def do_complete(backend, login, user=None, redirect_name='next',
                '{0}={1}'.format(redirect_name, redirect_value)
 
     if backend.setting('SANITIZE_REDIRECTS', True):
-        url = sanitize_redirect(backend.strategy.request_host(), url) or \
+        url = sanitize_redirect(backend.strategy.request_host(), url, backend.strategy.allow_host()) or \
               backend.setting('LOGIN_REDIRECT_URL')
     return backend.strategy.redirect(url)
 
