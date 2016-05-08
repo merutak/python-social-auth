@@ -361,6 +361,16 @@ class BaseOAuth2(OAuthAuth):
         return {'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'}
 
+    def extra_data(self, user, uid, response, details=None, *args, **kwargs):
+        """Return access_token, token_type, and extra defined names to store in
+            extra_data field"""
+        data = super(BaseOAuth2, self).extra_data(user, uid, response,
+                                                  details=details,
+                                                  *args, **kwargs)
+        data['token_type'] = response.get('token_type') or \
+                             kwargs.get('token_type')
+        return data
+
     def request_access_token(self, *args, **kwargs):
         return self.get_json(*args, **kwargs)
 
@@ -375,7 +385,7 @@ class BaseOAuth2(OAuthAuth):
 
     @handle_http_errors
     def auth_complete(self, *args, **kwargs):
-        """Completes loging process, must return user instance"""
+        """Completes login process, must return user instance"""
         state = self.validate_state()
         self.process_error(self.data)
 
@@ -396,6 +406,8 @@ class BaseOAuth2(OAuthAuth):
         data = self.user_data(access_token, *args, **kwargs)
         response = kwargs.get('response') or {}
         response.update(data or {})
+        if 'access_token' not in response:
+          response['access_token'] = access_token
         kwargs.update({'response': response, 'backend': self})
         return self.strategy.authenticate(*args, **kwargs)
 
