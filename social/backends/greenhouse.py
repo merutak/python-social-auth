@@ -12,7 +12,7 @@ class GreenhouseOAuth2(BaseOAuth2):
     ACCESS_TOKEN_METHOD = 'POST'
 
     def get_user_id(self, details, response):
-        return {}
+        return response['email']
 
     def get_user_details(self, response):
         """Return user details from greenhouse account"""
