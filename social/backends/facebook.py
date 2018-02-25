@@ -28,6 +28,7 @@ class FacebookOAuth2(BaseOAuth2):
         ('id', 'id'),
         ('expires', 'expires')
     ]
+    REDIRECT_STATE = False
 
     def get_user_details(self, response):
         """Return user details from Facebook account"""
